@@ -8,4 +8,9 @@
     - cd ..
     - cd ..
 
-3. 
+3. install django
+    - pip install django
+    - check: pip freeze
+
+4. create django project
+    - django-admin startproject djangoAuthApi
