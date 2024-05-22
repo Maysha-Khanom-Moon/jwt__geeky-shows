@@ -14,3 +14,10 @@
 
 4. create django project
     - django-admin startproject djangoAuthApi
+
+5. create a django app inside the project
+    - cd djangoAuthApi
+    - python manage.py startapp account
+
+6. add this app inside the project app
+    - settings.py --> add inside the INSTALLED_APPS
