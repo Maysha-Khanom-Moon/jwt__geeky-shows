@@ -139,7 +139,11 @@ REST_FRAMEWORK = {
 }
 
 
-# jwt's behavior
+# custom user model
+AUTH_USER_MODEL = 'account.User'
+
+
+# JWT settings
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=20),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
