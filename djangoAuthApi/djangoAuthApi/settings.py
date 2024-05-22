@@ -131,16 +131,17 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+
+# custom user model
+AUTH_USER_MODEL = 'account.User'
+
+
 # rest framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
-
-
-# custom user model
-AUTH_USER_MODEL = 'account.User'
 
 
 # JWT settings
