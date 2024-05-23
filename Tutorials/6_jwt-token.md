@@ -7,7 +7,7 @@
     - works on views
     - request:
     
-` `
+```
         {
             "email":"mkm2@example.com",
             "name": "moon2",
@@ -15,7 +15,8 @@
             "password2": "2024moon2",
             "tc": "True"
         }
-` `
+
+```
 
 3. each time after reg or login
     - create refresh and access token
