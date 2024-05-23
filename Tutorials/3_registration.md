@@ -35,7 +35,7 @@
         {
             "email": "demo@example.com",
             "name": "Demo",
-            "password": "123456",
-            "password2": "123456",
+            "password": "2024demo",
+            "password2": "2024demo",
             "tc": "True"
         }

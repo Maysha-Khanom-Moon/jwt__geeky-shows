@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
-from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer
+from .serializers import *
 
 from django.contrib.auth import authenticate
 from account.renderers import UserRenderer
@@ -44,26 +44,51 @@ class UserLoginView(APIView):
     
     # post --> to registration
     def post(self, request, *args, **kwargs):
+        # sourcery skip: remove-unnecessary-else, swap-if-else-branches
         serializer = UserLoginSerializer(data=request.data)
         
         if serializer.is_valid(raise_exception=True):
             email = serializer.validated_data.get('email')
             password = serializer.validated_data.get('password')
             user = authenticate(email=email, password=password)
-            token = get_tokens_for_user(user)
+            
             if user is not None:
+                token = get_tokens_for_user(user)
                 return Response({'token': token, 'msg': 'Login Successful'}, status=status.HTTP_200_OK)
             else:
                 return Response({'errors': {'non_field': ['Email or Password is not valid']}}, status=status.HTTP_401_UNAUTHORIZED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     
 
 # access logged user data
 class UserProfileView(APIView):
     renderer_classes = [UserRenderer]
-    
     permission_classes = [IsAuthenticated]
     
     def get(self, request, format=None):
         serializer = UserProfileSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# password change
+class UserChangePasswordView(APIView):
+    renderer_classes = [UserRenderer]
+    
+    # we need access-token
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, *args, **kwargs):
+        serializer = UserChangePasswordSerializer(data=request.data, context={'user': request.user})
+        
+        if serializer.is_valid(raise_exception=True):
+            
+            password = serializer.validated_data.get('password')
+            user = authenticate(password=password)
+            
+            user = serializer.update(request.user, serializer.validated_data)
+            return Response({'msg': 'Password Change Successful'}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
