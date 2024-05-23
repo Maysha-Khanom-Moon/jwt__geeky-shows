@@ -1,8 +1,9 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
-from .serializers import UserRegistrationSerializer, UserLoginSerializer
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer
 
 from django.contrib.auth import authenticate
 from account.renderers import UserRenderer
@@ -49,8 +50,20 @@ class UserLoginView(APIView):
             email = serializer.validated_data.get('email')
             password = serializer.validated_data.get('password')
             user = authenticate(email=email, password=password)
-            
+            token = get_tokens_for_user(user)
             if user is not None:
-                return Response({'msg': 'Login Successful'}, status=status.HTTP_200_OK)
+                return Response({'token': token, 'msg': 'Login Successful'}, status=status.HTTP_200_OK)
             else:
                 return Response({'errors': {'non_field': ['Email or Password is not valid']}}, status=status.HTTP_401_UNAUTHORIZED)
+        
+    
+
+# access logged user data
+class UserProfileView(APIView):
+    renderer_classes = [UserRenderer]
+    
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, format=None):
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
